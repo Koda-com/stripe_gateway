@@ -2,6 +2,7 @@
     "name": "kodastripe/stripewebhook",
     "description": "Pacote para gerenciar webhooks do Stripe",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "kodastripe\\StripeWebhook\\": "src/"
