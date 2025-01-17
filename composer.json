@@ -1,0 +1,21 @@
+{
+    "name": "kodastripe/stripewebhook",
+    "description": "Pacote para gerenciar webhooks do Stripe",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "kodastripe\\StripeWebhook\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^10.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "kodastripe\\StripeWebhook\\Providers\\StripeWebhookServiceProvider"
+            ]
+        }
+    }
+}
