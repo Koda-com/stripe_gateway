@@ -1,6 +1,6 @@
 <?php
 
-namespace YourVendorName\StripeWebhook\Providers;
+namespace kodastripe\StripeWebhook\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
