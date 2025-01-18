@@ -20,12 +20,6 @@ class StripeWebhookServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../Config/stripewebhook.php' => config_path('stripewebhook.php'),
         ], 'config');
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                MakeStripeWebhookEvent::class,
-            ]);
-        }
     }
 
     protected function loadRoutes()

@@ -3,7 +3,8 @@
 namespace kodastripe\StripeWebhook\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Events\StripeWebhookReceived;
+use kodastripe\StripeWebhook\Events\StripeWebhookReceived;
+use Illuminate\Support\Facades\Log;
 use Stripe\Webhook;
 
 class WebhookController
@@ -27,10 +28,15 @@ class WebhookController
      */
     private function verifySignature(Request $request)
     {
-        $payload = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
-        $secret = config('stripewebhook.secret', env('STRIPE_WEBHOOK_SECRET'));
-
-        return Webhook::constructEvent($payload, $sigHeader, $secret);
+        try {
+            $payload = $request->getContent();
+            $sigHeader = $request->header('Stripe-Signature');
+            $secret = config('stripewebhook.secret', env('STRIPE_WEBHOOK_SECRET'));
+    
+            return Webhook::constructEvent($payload, $sigHeader, $secret);
+        } catch (SignatureVerificationException $exception) {
+            Log::error('Falha ao receber WebHook - Verificação da assinatura falhou');
+            Log::error($exception->getMessage());
+        }
     }
 }
