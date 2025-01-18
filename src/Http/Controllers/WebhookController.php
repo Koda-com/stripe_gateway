@@ -3,43 +3,34 @@
 namespace kodastripe\StripeWebhook\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Events\StripeWebhookReceived;
+use Stripe\Webhook;
 
 class WebhookController
 {
     public function handle(Request $request)
     {
-        // Verifique a assinatura do webhook (opcional, mas recomendado)
-        $this->verifySignature($request);
+        $webhookEvent = $this->verifySignature($request);
 
-        // Processar o evento
-        $event = $request->input('type');
-        switch ($event) {
-            case 'invoice.paid':
-                $this->handlePaymentSucceeded($request->input('data.object'));
-                break;
-            case 'invoice.payment_failed':
-                $this->handlePaymentFailed($request->input('data.object'));
-                break;
-            default:
-                Log::info("Evento desconhecido recebido: {$event}");
-        }
+        StripeWebhookReceived::dispatch($webhookEvent);
 
         return response()->json(['status' => 'success']);
     }
 
-    protected function verifySignature(Request $request)
+    /**
+     * Verifica a assinatura do webhook.
+     *
+     * @param Request $request
+     * 
+     * @return \Stripe\Event
+     * @throws SignatureVerificationException
+     */
+    private function verifySignature(Request $request)
     {
-        // Implementar verificação de assinatura usando a biblioteca oficial do Stripe
-    }
+        $payload = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+        $secret = config('stripewebhook.secret', env('STRIPE_WEBHOOK_SECRET'));
 
-    protected function handlePaymentSucceeded($data)
-    {
-        Log::info('Pagamento bem-sucedido!', ['data' => $data]);
-    }
-
-    protected function handlePaymentFailed($data)
-    {
-        Log::warning('Pagamento falhou!', ['data' => $data]);
+        return Webhook::constructEvent($payload, $sigHeader, $secret);
     }
 }
