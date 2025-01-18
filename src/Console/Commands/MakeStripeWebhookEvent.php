@@ -61,12 +61,14 @@ class MakeStripeWebhookEvent extends Command
 
         class {{ class }}
         {
+            public $webhookEvent;
+
             /**
              * Cria uma nova instância de evento.
              */
-            public function __construct()
+            public function __construct($webhookEvent)
             {
-                //
+                $this->webhookEvent = $webhookEvent;
             }
         }
         STUB;

@@ -12,7 +12,7 @@ class WebhookController
     {
         $webhookEvent = $this->verifySignature($request);
 
-        StripeWebhookReceived::dispatch($webhookEvent);
+        event(new StripeWebhookReceived($webhookEvent));
 
         return response()->json(['status' => 'success']);
     }
